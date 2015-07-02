@@ -29,7 +29,6 @@ func (s *HandlerSuite) ServeAndRecord(req *http.Request) *httptest.ResponseRecor
 func (s *HandlerSuite) TestGetHandler(c *C) {
 	req, err := http.NewRequest("GET", "http://localhost:8081/hello", nil)
 	c.Assert(err, IsNil)
-
 	resp := s.ServeAndRecord(req)
 	c.Assert(resp.Code, Equals, 200)
 
@@ -42,9 +41,21 @@ func (s *HandlerSuite) TestGetHandler(c *C) {
 func (s *HandlerSuite) TestHelloHandler(c *C) {
 	req, err := http.NewRequest("GET", "http://localhost:8081/hello", nil)
 	c.Assert(err, IsNil)
-
 	resp := s.ServeAndRecord(req)
 	c.Assert(resp.Code, Equals, 200)
-	c.Assert(resp.Body.String(), Equals, "Hello from Gonc on port 8081 from container localhost\n")
+	c.Assert(resp.Body.String(), Equals, "Hello from Cureal on port 8081 from container localhost\n")
+
+}
+
+func (s *HandlerSuite) TestStaticHandler(c *C) {
+	req, err := http.NewRequest("GET", "http://localhost:8081/cureal.html", nil)
+	c.Assert(err, IsNil)
+	resp := s.ServeAndRecord(req)
+	c.Assert(resp.Code, Equals, 200)
+
+	req, err = http.NewRequest("GET", "http://localhost:8081/blahblahfoofoo.html", nil)
+	c.Assert(err, IsNil)
+	resp = s.ServeAndRecord(req)
+	c.Assert(resp.Code, Equals, 404)
 
 }

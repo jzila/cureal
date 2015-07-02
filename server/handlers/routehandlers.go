@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func NewHelloHandler(port string, host string) http.Handler {
+func NewHelloHandler(host, port string) http.Handler {
 	return NewGetHandler(NewStringHandler(fmt.Sprintf("Hello from Cureal on port %s from container %s\n", port, host)))
 }
 
