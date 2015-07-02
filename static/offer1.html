@@ -6,6 +6,13 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/jsx" src="react/components/Step.jsx"></script>
+        <script type="text/jsx" src="react/components/StepList.jsx"></script>
+        <script type="text/jsx" src="react/components/StepPanel.jsx"></script>
+        <script type="text/javascript" src="bower_components/classnames/index.js"></script>
 	</head>
 	<body id="top">
 
@@ -31,15 +38,7 @@
         <div id="main" class="container">
             <h2>Make an Offer</h2>
 
-            <!-- Intro -->
-            <div class="12u$">
-                <ul class="steps 12u$">
-                    <li class="step done"><a href="#" class="step-heading 12u$">Which Home?</a></li>
-                    <li class="step todo"><a href="offer2.html" class="step-heading">Who's Buying?</a></li>
-                    <li class="step todo"><a href="#" class="step-heading">How Will You Pay?</a></li>
-                    <li class="step todo"><a href="#" class="step-heading">Sweeten the Deal</a></li>
-                    <li class="step disabled voffset"><span href="#" class="step-heading">Create my Offer! (incomplete)</span></li>
-                </ul>
+            <div id="step-list-container" class="12u$">
             </div>
 
             <hr class="major" />
@@ -615,42 +614,83 @@ print 'It took ' + i + ' iterations to sort the deck.';
         </div>
 
 		<!-- Footer -->
-			<footer id="footer">
-				<div class="container">
-					<div class="row double">
-						<div class="6u 12u$(medium)">
-							<h2>Aliquam Interdum</h2>
-							<p>Ornare interdum nascetur enim lobortis nunc amet placerat pellentesque nascetur in adipiscing. Interdum amet accumsan placerat commodo ut amet aliquam blandit nunc tempor lobortis nunc non. Mi accumsan. Justo aliquet massa adipiscing cubilia eu accumsan id. Arcu accumsan faucibus vis ultricies adipiscing ornare ut. Mi accumsan. Justo aliquet massa adipiscing cubilia eu accumsan id lorem ipsum dolor.</p>
-						</div>
-						<div class="3u 6u(medium) 12u$(small)">
-							<h3>Accumsan</h3>
-							<ul class="alt">
-								<li>Nascetur nunc varius commodo.</li>
-								<li>Vis id faucibus montes tempor</li>
-								<li>massa amet lobortis vel.</li>
-								<li>Nascetur nunc varius commodo.</li>
-							</ul>
-						</div>
-						<div class="3u$ 6u$(medium) 12u$(small)">
-							<h3>Faucibus</h3>
-							<ul class="alt">
-								<li>Nascetur nunc varius commodo.</li>
-								<li>Vis id faucibus montes tempor</li>
-								<li>massa amet lobortis vel.</li>
-								<li>Nascetur nunc varius commodo.</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<div class="copyright">
-					&copy; Untitled. All rights reserved.
-				</div>
-			</footer>
+        <footer id="footer">
+            <div class="container">
+                <div class="row double">
+                    <div class="6u 12u$(medium)">
+                        <h2>Aliquam Interdum</h2>
+                        <p>Ornare interdum nascetur enim lobortis nunc amet placerat pellentesque nascetur in adipiscing. Interdum amet accumsan placerat commodo ut amet aliquam blandit nunc tempor lobortis nunc non. Mi accumsan. Justo aliquet massa adipiscing cubilia eu accumsan id. Arcu accumsan faucibus vis ultricies adipiscing ornare ut. Mi accumsan. Justo aliquet massa adipiscing cubilia eu accumsan id lorem ipsum dolor.</p>
+                    </div>
+                    <div class="3u 6u(medium) 12u$(small)">
+                        <h3>Accumsan</h3>
+                        <ul class="alt">
+                            <li>Nascetur nunc varius commodo.</li>
+                            <li>Vis id faucibus montes tempor</li>
+                            <li>massa amet lobortis vel.</li>
+                            <li>Nascetur nunc varius commodo.</li>
+                        </ul>
+                    </div>
+                    <div class="3u$ 6u$(medium) 12u$(small)">
+                        <h3>Faucibus</h3>
+                        <ul class="alt">
+                            <li>Nascetur nunc varius commodo.</li>
+                            <li>Vis id faucibus montes tempor</li>
+                            <li>massa amet lobortis vel.</li>
+                            <li>Nascetur nunc varius commodo.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; Untitled. All rights reserved.
+            </div>
+        </footer>
 
 		<!-- Scripts -->
         <script src="assets/js/skel.min.js"></script>
         <script src="assets/js/main.js"></script>
-        <script src="cureal.js"></script>
+        <script type="text/jsx">
+            var StepState = {
+                TODO: 0,
+                DONE: 1
+            };
+            var StepActive = {
+                INACTIVE: 0,
+                ACTIVE: 1,
+                DISABLED: 2
+            };
+            var stepData = [
+                {
+                    text: "Which Home?",
+                    stepState: StepState.DONE,
+                    stepActive: StepActive.INACTIVE
+                },
+                {
+                    text: "Who's Buying?",
+                    stepState: StepState.TODO,
+                    stepActive: StepActive.INACTIVE
+                },
+                {
+                    text: "How Will You Pay?",
+                    stepState: StepState.TODO,
+                    stepActive: StepActive.INACTIVE
+                },
+                {
+                    text: "Sweeten the Deal",
+                    stepState: StepState.TODO,
+                    stepActive: StepActive.INACTIVE
+                },
+                {
+                    text: "Create your Offer! (incomplete)",
+                    stepActive: StepActive.DISABLED,
+                    submit: true
+                },
+            ];
+            React.render(
+                <StepPanel data={stepData} />,
+                document.getElementById('main')
+            );
+        </script>
 
 	</body>
 </html>
