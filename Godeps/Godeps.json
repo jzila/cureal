@@ -1,0 +1,23 @@
+{
+	"ImportPath": "github.com/jzila/cureal",
+	"GoVersion": "go1.4.2",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/wellington/go-libsass",
+			"Comment": "v0.9.0-80-g7354d06",
+			"Rev": "7354d068d27175e39df1af94cd761636f74b1f4f"
+		},
+		{
+			"ImportPath": "github.com/wellington/spritewell",
+			"Comment": "v0.4.0-19-g748bfe9",
+			"Rev": "748bfe956f31c257605c304b41a0525a4487d17d"
+		},
+		{
+			"ImportPath": "gopkg.in/check.v1",
+			"Rev": "8d49746f13e4c654088c52685541fcf4cbc8fa59"
+		}
+	]
+}
