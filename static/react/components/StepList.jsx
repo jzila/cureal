@@ -15,6 +15,7 @@ var StepList = React.createClass({
                     initialStepActive={step.stepActive}
                     text={step.text}
                     submit={step.submit}
+                    controls={step.controls}
                     dispatchClick={stepListThis.handleClick}
                     ref={'step'+i}
                 />

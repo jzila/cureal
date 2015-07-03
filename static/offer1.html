@@ -12,6 +12,7 @@
         <script type="text/jsx" src="react/components/Step.jsx"></script>
         <script type="text/jsx" src="react/components/StepList.jsx"></script>
         <script type="text/jsx" src="react/components/StepPanel.jsx"></script>
+        <script type="text/jsx" src="react/components/Controls.jsx"></script>
         <script type="text/javascript" src="bower_components/classnames/index.js"></script>
 	</head>
 	<body id="top">
@@ -668,7 +669,35 @@ print 'It took ' + i + ' iterations to sort the deck.';
                 {
                     text: "Who's Buying?",
                     stepState: StepState.TODO,
-                    stepActive: StepActive.INACTIVE
+                    stepActive: StepActive.INACTIVE,
+                    controls: [
+                        [{
+                            "width": 8,
+                            "type": "name",
+                            "text": "Legal Name"
+                        },
+                        {
+                            "width": 4,
+                            "type": "ssn",
+                            "text": "SSN"
+                        }],
+                        [{
+                            "width": 6,
+                            "type": "email",
+                            "text": "Email Address"
+                        },
+                        {
+                            "width": 6,
+                            "type": "phone",
+                            "text": "Phone Number"
+                        }],
+                        [{
+                            "width": 12,
+                            "type": "duplicate-form",
+                            "text": "Add Another Buyer",
+                            "duplicate-rows": [0, 1]
+                        }]
+                    ]
                 },
                 {
                     text: "How Will You Pay?",
