@@ -4113,6 +4113,12 @@ button,
 .hidden {
   display: none !important; }
 
+.step-form-container .label {
+  margin-left: 1em;
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-top: 1em; }
+
 ul.steps {
   list-style-type: none;
   padding: 0; }
@@ -4122,8 +4128,7 @@ ul.steps {
       margin-bottom: 1.5em; }
       ul.steps .step.active .step-heading {
         color: #fff !important;
-        background-color: #414141;
-        margin-bottom: 1.5em !important; }
+        background-color: #414141; }
     ul.steps .step.done .step-heading {
       color: #5ACD56; }
       ul.steps .step.done .step-heading:hover {

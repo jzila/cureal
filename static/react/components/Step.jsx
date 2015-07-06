@@ -30,7 +30,7 @@ var StepContainer = React.createClass({
         return (
             <li className={classes}>
                 <div onClick={this.handleClick} className="step-heading">{this.props.text}</div>
-                <ActiveStep initialStepActive={this.state.stepActive} controls={this.props.controls} ref="activeStep" />
+                <ActiveStep initialStepActive={this.state.stepActive} form={this.props.form} ref="activeStep" />
             </li>
         );
     }
@@ -47,7 +47,7 @@ var ActiveStep = React.createClass({
         });
         return (
             <div className={classes}>
-                <RowControlList rows={this.props.controls} />
+                <Form form={this.props.form} />
             </div>
         );
     }
