@@ -41,13 +41,16 @@ var ActiveStep = React.createClass({
         return {stepActive: this.props.initialStepActive};
     },
     render: function() {
+        if (!this.props.form) {
+            return null;
+        }
         var classes = classNames({
             "step-form-container": true,
             "hidden": this.state.stepActive !== StepActive.ACTIVE
         });
         return (
             <div className={classes}>
-                <Form form={this.props.form} />
+                <Form data={this.props.form.data} controls={this.props.form.controls} actions={this.props.form.actions} />
             </div>
         );
     }

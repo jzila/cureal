@@ -1,4 +1,9 @@
 var InputControl = React.createClass({
+    handleChange: function(evt) {
+        var key = this.props.id.substring(0, this.props.id.lastIndexOf("-"));
+        var value = evt.target.value;
+        this.props.handleChange(key, value);
+    },
     render: function() {
         var classes = {
             "12u$(xsmall)": true
@@ -6,7 +11,7 @@ var InputControl = React.createClass({
         classes[this.props.widthClass] = true;
         return (
             <div className={classNames(classes)}>
-                <input type={this.props.inputType} name={this.props.id} id={this.props.id} placeholder={this.props.text} defaultValue={this.props.value} />
+                <input type={this.props.inputType} name={this.props.id} id={this.props.id} placeholder={this.props.text} defaultValue={this.props.value} onChange={this.handleChange} />
             </div>
         );
     }
@@ -15,7 +20,7 @@ var InputControl = React.createClass({
 var TextControl = React.createClass({
     render: function() {
         return (
-            <InputControl inputType="text" id={this.props.id} name={this.props.id} text={this.props.text} widthClass={this.props.widthClass} value={this.props.value} />
+            <InputControl inputType="text" id={this.props.id} name={this.props.id} text={this.props.text} widthClass={this.props.widthClass} value={this.props.value} handleChange={this.props.handleChange} />
         );
     }
 });
@@ -32,7 +37,7 @@ var LabelControl = React.createClass({
 var EmailControl = React.createClass({
     render: function() {
         return (
-            <InputControl inputType="email" id={this.props.id} name={this.props.id} text={this.props.text} widthClass={this.props.widthClass} value={this.props.value} />
+            <InputControl inputType="email" id={this.props.id} name={this.props.id} text={this.props.text} widthClass={this.props.widthClass} value={this.props.value} handleChange={this.props.handleChange} />
         );
     }
 });
@@ -48,6 +53,11 @@ var DuplicateFormControl = React.createClass({
 });
 
 var ControlRow = React.createClass({
+    handleChange: function(id, value) {
+        var data = jQuery.extend({}, this.props.data);
+        data[id] = value;
+        this.props.handleChange(data);
+    },
     render: function() {
         var _this = this;
         var width=0;
@@ -59,7 +69,7 @@ var ControlRow = React.createClass({
             }
             var id = control.id + "-" + _this.props.formId;
             var text = control.text.replace(/{{form-id}}/, function(match) {
-                return _this.props.formId;
+                return _this.props.formId + 1;
             });
             var value = "";
             if (control.id && _this.props.data && _this.props.data[control.id]) {
@@ -67,13 +77,13 @@ var ControlRow = React.createClass({
             }
             switch (control.type) {
                 case "name":
-                    return <TextControl widthClass={widthClass} id={id} text={text} value={value} />;
+                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} />;
                 case "ssn":
-                    return <TextControl widthClass={widthClass} id={id} text={text} value={value} />;
+                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} />;
                 case "email":
-                    return <EmailControl widthClass={widthClass} id={id} text={text} value={value} />;
+                    return <EmailControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} />;
                 case "phone":
-                    return <TextControl widthClass={widthClass} id={id} text={text} value={value} />;
+                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} />;
                 case "label":
                     return <LabelControl widthClass={widthClass} text={text} />;
                 case "duplicate-form":
@@ -92,69 +102,40 @@ var ControlRow = React.createClass({
 
 var Form = React.createClass({
     getInitialState: function() {
-        var rows = [];
-        var form_id = 1;
-        var state = {};
-        if (this.props.form) {
-            var makeCreateRow = function(data, key) {
-                return function(row) {
-                    return {
-                        "row": jQuery.extend(true, [], row),
-                        "key": key++,
-                        "form-id": form_id,
-                        "data": data
-                    };
-                };
-            };
-            if (this.props.form.controls && this.props.form.controls.length) {
-                if (this.props.form.data) {
-                    for (var i=0; i<this.props.form.data.length; i++) {
-                        var data = this.props.form.data[i];
-                        Array.prototype.push.apply(rows, this.props.form.controls.map(makeCreateRow(data, rows.length)));
-                        form_id++;
-                    }
-                } else {
-                    rows = this.props.form.controls.map(makeCreateRow(null, rows.length));
-                    form_id++;
-                }
-            }
-            state.actionsIndex = rows.length;
-            if (this.props.form.actions && this.props.form.actions.length) {
-                Array.prototype.push.apply(rows, this.props.form.actions.map(makeCreateRow(null, rows.length)));
-            }
-        }
-        state.rows = rows;
-        state["form-id"] = form_id;
-        return state;
+        return {
+            data: this.props.data.map(function(d, i) {
+                var dd = jQuery.extend({}, d);
+                dd.id = i;
+                return dd;
+            })
+        };
     },
-    handleDuplicateFormClick: function() {
-        if (this.props.form.controls && this.props.form.controls.length) {
-            var rows = this.state.rows;
-            var form_id = this.state["form-id"];
-            var key = rows.length;
-            newRows = this.props.form.controls.map(function(row) {
-                return {
-                    "row": jQuery.extend(true, [], row),
-                    "key": key++,
-                    "form-id": form_id
-                };
-            });
-            Array.prototype.splice.apply(rows, [this.state.actionsIndex, 0].concat(newRows));
-            this.setState({
-                rows: rows,
-                actionsIndex: this.state.actionsIndex + newRows.length,
-                "form-id": form_id + 1
-            });
-        }
+    addData: function() {
+        var data = this.state.data;
+        data.push({"id": data.length});
+        this.setState({data: data});
+    },
+    updateData: function(newData) {
+        var data = this.state.data;
+        data[newData.id] = newData;
+        this.setState({data: data});
+        console.log("New data: " + JSON.stringify(data));
     },
     render: function() {
-        if (!this.state.rows || this.state.rows.length===0) {
-            return null;
-        }
+        var rows = [];
         var _this = this;
-        var rows = this.state.rows.map(function(obj) {
-            return <ControlRow row={obj.row} handleClick={_this.handleDuplicateFormClick} key={obj.key} formId={obj["form-id"]} data={obj.data} />;
-        });
+        var makeCreateRow = function(data) {
+            var key = 0;
+            var form_id = data.id;
+            return function(row) {
+                return <ControlRow row={row} handleClick={_this.addData} handleChange={_this.updateData} key={"" + form_id + "-" + key++} formId={form_id} data={data} />;
+            };
+        };
+        for (var i=0; i<this.state.data.length; i++) {
+            var data = this.state.data[i];
+            Array.prototype.push.apply(rows, this.props.controls.map(makeCreateRow(data)));
+        }
+        Array.prototype.push.apply(rows, this.props.actions.map(makeCreateRow({"id": "a"})));
         return (
             <div className="12u$">
                 {rows}
