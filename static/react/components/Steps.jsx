@@ -51,7 +51,7 @@ var StepContainer = React.createClass({
         });
         return (
             <li className={classes}>
-                <div onClick={this.handleClick} className="step-heading">{this.props.text}</div>
+                <div onTouchEnd={this.handleClick} onClick={this.handleClick} className="step-heading">{this.props.text}</div>
                 <ActiveStep initialStepActive={this.state.stepActive} form={this.props.form} ref="activeStep" />
             </li>
         );

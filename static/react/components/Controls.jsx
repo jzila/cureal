@@ -31,7 +31,7 @@ var LabelControl = React.createClass({
             <div className="12u$">
                 <div className="label" widthClass={this.props.widthClass}>
                     <div className="text">{this.props.text}</div>
-                    <div className="remove" onClick={this.props.handleRemove}></div>
+                    <div className="remove" onTouchEnd={this.props.handleRemove} onClick={this.props.handleRemove}></div>
                 </div>
             </div>
         );
@@ -51,7 +51,7 @@ var DuplicateFormControl = React.createClass({
     render: function() {
         return (
             <div className={"actions 12u$(xsmall) " + this.props.widthClass}>
-                <div className="button alt fit user-add" onClick={this.props.handleClick}>{this.props.text}</div>
+                <div className="button alt fit user-add" onTouchEnd={this.props.handleClick} onClick={this.props.handleClick}>{this.props.text}</div>
             </div>
         );
     }
@@ -81,7 +81,7 @@ var ControlRow = React.createClass({
             }
             id = id + "-" + _this.props.formId;
             var text = control.text.replace(/{{form-id}}/, function(match) {
-                return _this.props.formId + 1;
+                return _this.props.formSequence + 1;
             });
             var value = "";
             if (control.id && _this.props.data && _this.props.data[control.id]) {
@@ -138,7 +138,7 @@ var Form = React.createClass({
     removeData: function(formId) {
         var data = this.state.data;
         delete data[formId];
-        if (data.length === 0) {
+        if (Object.keys(data).length === 0) {
             this.addData();
         } else {
             this.setState({data: data});
@@ -147,16 +147,17 @@ var Form = React.createClass({
     render: function() {
         var rows = [];
         var _this = this;
-        var makeCreateRow = function(data) {
+        var makeCreateRow = function(data, formSequence) {
             var key = 0;
             var form_id = data.id;
             return function(row) {
-                return <ControlRow row={row} handleRemove={_this.removeData} handleClick={_this.addData} handleChange={_this.updateData} key={"" + form_id + "-" + key++} formId={form_id} data={data} />;
+                return <ControlRow row={row} handleRemove={_this.removeData} handleClick={_this.addData} handleChange={_this.updateData} key={"" + form_id + "-" + key++} formId={form_id} data={data} formSequence={formSequence} />;
             };
         };
-        for (var i in this.state.data) {
-            var data = this.state.data[i];
-            Array.prototype.push.apply(rows, this.props.controls.map(makeCreateRow(data)));
+        var i = 0;
+        for (var k in this.state.data) {
+            var data = this.state.data[k];
+            Array.prototype.push.apply(rows, this.props.controls.map(makeCreateRow(data, i++)));
         }
         Array.prototype.push.apply(rows, this.props.actions.map(makeCreateRow({"id": "a"})));
         return (
