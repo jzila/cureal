@@ -4176,6 +4176,7 @@ button,
     float: right;
     padding: .4em .7em .4em .7em;
     border-radius: .2em;
+    font-size: 1.1em;
     color: #b93b37;
     cursor: pointer; }
     .step-form-container .label .remove:hover {

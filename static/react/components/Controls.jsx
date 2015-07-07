@@ -75,7 +75,11 @@ var ControlRow = React.createClass({
             if (width >= 12) {
                 widthClass += "$";
             }
-            var id = control.id + "-" + _this.props.formId;
+            var id = control.type;
+            if (control.id) {
+                id = control.id;
+            }
+            id = id + "-" + _this.props.formId;
             var text = control.text.replace(/{{form-id}}/, function(match) {
                 return _this.props.formId + 1;
             });
@@ -85,17 +89,17 @@ var ControlRow = React.createClass({
             }
             switch (control.type) {
                 case "name":
-                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} />;
+                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} key={id}/>;
                 case "ssn":
-                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} />;
+                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} key={id}/>;
                 case "email":
-                    return <EmailControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} />;
+                    return <EmailControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} key={id}/>;
                 case "phone":
-                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} />;
+                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} key={id}/>;
                 case "label":
-                    return <LabelControl handleRemove={_this.handleRemove} widthClass={widthClass} text={text} />;
+                    return <LabelControl handleRemove={_this.handleRemove} widthClass={widthClass} text={text} key={id} />;
                 case "duplicate-form":
-                    return <DuplicateFormControl widthClass={widthClass} id={id} text={control.text} handleClick={_this.props.handleClick} />;
+                    return <DuplicateFormControl widthClass={widthClass} id={id} text={control.text} handleClick={_this.props.handleClick} key={id} />;
                 default:
                     return null;
             }
@@ -110,27 +114,30 @@ var ControlRow = React.createClass({
 
 var Form = React.createClass({
     getInitialState: function() {
+        var i=0;
         return {
-            data: this.props.data.map(function(d, i) {
+            data: this.props.data.reduce(function(obj, d) {
                 var dd = jQuery.extend({}, d);
                 dd.id = i;
-                return dd;
-            })
+                obj[i++] = dd;
+                return obj;
+            }, {}),
+            nextIndex: i
         };
     },
     addData: function() {
-        var data = this.state.data.slice();
-        data.push({"id": data[data.length-1].id + 1});
-        this.setState({data: data});
+        var data = this.state.data;
+        data[this.state.nextIndex] = {"id": this.state.nextIndex};
+        this.setState({data: data, nextIndex: this.state.nextIndex + 1});
     },
     updateData: function(newData) {
-        var data = this.state.data.slice();
+        var data = this.state.data;
         data[newData.id] = newData;
         this.setState({data: data});
     },
     removeData: function(formId) {
-        var data = this.state.data.slice();
-        data.splice(data[formId], 1);
+        var data = this.state.data;
+        delete data[formId];
         if (data.length === 0) {
             this.addData();
         } else {
@@ -147,7 +154,7 @@ var Form = React.createClass({
                 return <ControlRow row={row} handleRemove={_this.removeData} handleClick={_this.addData} handleChange={_this.updateData} key={"" + form_id + "-" + key++} formId={form_id} data={data} />;
             };
         };
-        for (var i=0; i<this.state.data.length; i++) {
+        for (var i in this.state.data) {
             var data = this.state.data[i];
             Array.prototype.push.apply(rows, this.props.controls.map(makeCreateRow(data)));
         }
