@@ -6,10 +6,9 @@
 
 .step-form-container {
     .label {
-        margin-left: 1em;
+        margin: 0 -1em 0 1em;
         font-weight: bold;
         font-size: 1.1em;
-        margin-top: 1em;
     }
 }
 
@@ -28,6 +27,7 @@ ul.steps {
                 @extend .icon;
                 @extend .fa-arrow-right;
 
+                margin-bottom: 1em;
                 color: #fff !important;
                 background-color: darken(_palette(accent2, bg), 10);
             }

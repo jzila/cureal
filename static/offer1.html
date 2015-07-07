@@ -681,22 +681,25 @@ print 'It took ' + i + ' iterations to sort the deck.';
                                 "width": 8,
                                 "type": "name",
                                 "text": "Legal Name",
-                                "value": "John Smith"
+                                "id": "buyer-name"
                             },
                             {
                                 "width": 4,
                                 "type": "ssn",
-                                "text": "SSN"
+                                "text": "SSN",
+                                "id": "buyer-ssn"
                             }],
                             [{
                                 "width": 6,
                                 "type": "email",
-                                "text": "Email Address"
+                                "text": "Email Address",
+                                "id": "buyer-email"
                             },
                             {
                                 "width": 6,
                                 "type": "phone",
-                                "text": "Phone Number"
+                                "text": "Phone Number",
+                                "id": "buyer-phone"
                             }],
                         ],
                         actions: [
@@ -705,7 +708,17 @@ print 'It took ' + i + ' iterations to sort the deck.';
                                 "type": "duplicate-form",
                                 "text": "Add Another Buyer",
                             }]
-                        ]
+                        ],
+                        data: [
+                            {
+                                "buyer-name": "John Smith",
+                                "buyer-email": "john@smith.com"
+                            },
+                            {
+                                "buyer-name": "Jane Doe",
+                                "buyer-email": "jane@doe.com"
+                            }
+                        ],
                     }
                 },
                 {
