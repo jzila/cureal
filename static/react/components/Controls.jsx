@@ -28,7 +28,12 @@ var TextControl = React.createClass({
 var LabelControl = React.createClass({
     render: function() {
         return (
-            <div className="label" widthClass={this.props.widthClass}>{this.props.text}</div>
+            <div className="12u$">
+                <div className="label" widthClass={this.props.widthClass}>
+                    <div className="text">{this.props.text}</div>
+                    <div className="remove" onClick={this.props.handleRemove}></div>
+                </div>
+            </div>
         );
     }
 });
@@ -46,7 +51,7 @@ var DuplicateFormControl = React.createClass({
     render: function() {
         return (
             <div className={"actions 12u$(xsmall) " + this.props.widthClass}>
-                <div className="button alt fit" onClick={this.props.handleClick}>{this.props.text}</div>
+                <div className="button alt fit user-add" onClick={this.props.handleClick}>{this.props.text}</div>
             </div>
         );
     }
@@ -57,6 +62,9 @@ var ControlRow = React.createClass({
         var data = jQuery.extend({}, this.props.data);
         data[id] = value;
         this.props.handleChange(data);
+    },
+    handleRemove: function() {
+        this.props.handleRemove(this.props.formId);
     },
     render: function() {
         var _this = this;
@@ -85,7 +93,7 @@ var ControlRow = React.createClass({
                 case "phone":
                     return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} />;
                 case "label":
-                    return <LabelControl widthClass={widthClass} text={text} />;
+                    return <LabelControl handleRemove={_this.handleRemove} widthClass={widthClass} text={text} />;
                 case "duplicate-form":
                     return <DuplicateFormControl widthClass={widthClass} id={id} text={control.text} handleClick={_this.props.handleClick} />;
                 default:
@@ -111,15 +119,23 @@ var Form = React.createClass({
         };
     },
     addData: function() {
-        var data = this.state.data;
-        data.push({"id": data.length});
+        var data = this.state.data.slice();
+        data.push({"id": data[data.length-1].id + 1});
         this.setState({data: data});
     },
     updateData: function(newData) {
-        var data = this.state.data;
+        var data = this.state.data.slice();
         data[newData.id] = newData;
         this.setState({data: data});
-        console.log("New data: " + JSON.stringify(data));
+    },
+    removeData: function(formId) {
+        var data = this.state.data.slice();
+        data.splice(data[formId], 1);
+        if (data.length === 0) {
+            this.addData();
+        } else {
+            this.setState({data: data});
+        }
     },
     render: function() {
         var rows = [];
@@ -128,7 +144,7 @@ var Form = React.createClass({
             var key = 0;
             var form_id = data.id;
             return function(row) {
-                return <ControlRow row={row} handleClick={_this.addData} handleChange={_this.updateData} key={"" + form_id + "-" + key++} formId={form_id} data={data} />;
+                return <ControlRow row={row} handleRemove={_this.removeData} handleClick={_this.addData} handleChange={_this.updateData} key={"" + form_id + "-" + key++} formId={form_id} data={data} />;
             };
         };
         for (var i=0; i<this.state.data.length; i++) {

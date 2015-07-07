@@ -6,9 +6,47 @@
 
 .step-form-container {
     .label {
-        margin: 0 -1em 0 1em;
+        padding-left: 1em;
         font-weight: bold;
         font-size: 1.1em;
+
+        .text {
+            padding-top: .4em;
+            float: left;
+        }
+
+        .remove {
+            @include vendor('transition', 'background-color #{_duration(transition)} ease-in-out, color #{_duration(transition)} ease-in-out');
+            @extend .icon;
+            @extend .fa-user-times;
+
+            float: right;
+            padding: .4em .7em .4em .7em;
+            border-radius: .2em;
+
+            color: darken(_palette(accent4, bg), 10);
+            cursor: pointer;
+
+            &:hover {
+                color: darken(_palette(accent4, bg), 10);
+                background-color: lighten(_palette(accent4, bg), 30);
+            }
+
+            &:active {
+                color: #fff !important;
+                background-color: darken(_palette(accent4, bg), 10);
+            }
+        }
+    }
+
+    .user-add {
+        @extend .icon;
+        @extend .fa-user-plus;
+        color: darken(_palette(accent2, bg), 5) !important;
+
+        &:before {
+            color: darken(_palette(accent2, bg), 5) !important;
+        }
     }
 }
 

@@ -12,10 +12,12 @@ var StepContainer = React.createClass({
         }
     },
     handleClick: function() {
-        this.props.dispatchClick();
-        if (this.state.stepActive !== StepActive.ACTIVE) {
-            this.setState({stepActive: StepActive.ACTIVE});
-            this.refs.activeStep.setState({stepActive: StepActive.ACTIVE});
+        if (this.state.stepActive !== StepActive.DISABLED) {
+            this.props.dispatchClick();
+            if (this.state.stepActive !== StepActive.ACTIVE) {
+                this.setState({stepActive: StepActive.ACTIVE});
+                this.refs.activeStep.setState({stepActive: StepActive.ACTIVE});
+            }
         }
     },
     render: function() {

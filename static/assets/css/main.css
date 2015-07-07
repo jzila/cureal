@@ -1767,10 +1767,10 @@
 .fa-server:before {
   content: ""; }
 
-.fa-user-plus:before {
+.fa-user-plus:before, .step-form-container .user-add:before {
   content: ""; }
 
-.fa-user-times:before {
+.fa-user-times:before, .step-form-container .label .remove:before {
   content: ""; }
 
 .fa-hotel:before,
@@ -3315,18 +3315,18 @@ input[type="radio"] + label:before {
     padding: 0; }
 
 /* Icon */
-.icon, ul.steps .step.active .step-heading, ul.steps .step.done .step-heading, ul.steps .step.todo .step-heading {
+.icon, .step-form-container .label .remove, .step-form-container .user-add, ul.steps .step.active .step-heading, ul.steps .step.done .step-heading, ul.steps .step.todo .step-heading {
   text-decoration: none;
   border-bottom: none;
   position: relative; }
-  .icon:before, ul.steps .step.active .step-heading:before, ul.steps .step.done .step-heading:before, ul.steps .step.todo .step-heading:before {
+  .icon:before, .step-form-container .label .remove:before, .step-form-container .user-add:before, ul.steps .step.active .step-heading:before, ul.steps .step.done .step-heading:before, ul.steps .step.todo .step-heading:before {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     font-family: FontAwesome;
     font-style: normal;
     font-weight: normal;
     text-transform: none !important; }
-  .icon > .label, ul.steps .step.active .step-heading > .label, ul.steps .step.done .step-heading > .label, ul.steps .step.todo .step-heading > .label {
+  .icon > .label, .step-form-container .label .remove > .label, .step-form-container .user-add > .label, ul.steps .step.active .step-heading > .label, ul.steps .step.done .step-heading > .label, ul.steps .step.todo .step-heading > .label {
     display: none; }
 
 /* Image */
@@ -3395,7 +3395,7 @@ ul {
       padding: 0 1em 0 0; }
       ul.icons li:last-child {
         padding-right: 0; }
-      ul.icons li .icon:before, ul.icons li ul.steps .step.active .step-heading:before, ul.steps .step.active ul.icons li .step-heading:before, ul.icons li ul.steps .step.done .step-heading:before, ul.steps .step.done ul.icons li .step-heading:before, ul.icons li ul.steps .step.todo .step-heading:before, ul.steps .step.todo ul.icons li .step-heading:before {
+      ul.icons li .icon:before, ul.icons li .step-form-container .label .remove:before, .step-form-container .label ul.icons li .remove:before, ul.icons li .step-form-container .user-add:before, .step-form-container ul.icons li .user-add:before, ul.icons li ul.steps .step.active .step-heading:before, ul.steps .step.active ul.icons li .step-heading:before, ul.icons li ul.steps .step.done .step-heading:before, ul.steps .step.done ul.icons li .step-heading:before, ul.icons li ul.steps .step.todo .step-heading:before, ul.steps .step.todo ul.icons li .step-heading:before {
         font-size: 2em; }
   ul.actions {
     cursor: default;
@@ -3449,7 +3449,7 @@ ul {
           ul.actions li > * {
             width: 100%;
             margin: 0 !important; }
-            ul.actions li > *.icon:before, ul.actions ul.steps .step.active li > *.step-heading:before, ul.steps .step.active ul.actions li > *.step-heading:before, ul.actions ul.steps .step.done li > *.step-heading:before, ul.steps .step.done ul.actions li > *.step-heading:before, ul.actions ul.steps .step.todo li > *.step-heading:before, ul.steps .step.todo ul.actions li > *.step-heading:before {
+            ul.actions li > *.icon:before, ul.actions .step-form-container .label li > *.remove:before, .step-form-container .label ul.actions li > *.remove:before, ul.actions .step-form-container li > *.user-add:before, .step-form-container ul.actions li > *.user-add:before, ul.actions ul.steps .step.active li > *.step-heading:before, ul.steps .step.active ul.actions li > *.step-heading:before, ul.actions ul.steps .step.done li > *.step-heading:before, ul.steps .step.done ul.actions li > *.step-heading:before, ul.actions ul.steps .step.todo li > *.step-heading:before, ul.steps .step.todo ul.actions li > *.step-heading:before {
               margin-left: -2em; }
         ul.actions.small li {
           padding: 0.5em 0 0 0; }
@@ -3545,38 +3545,54 @@ button,
   button:active,
   .button:active {
     background-color: #4d4d4d; }
-  input[type="submit"].icon, ul.steps .step.active input[type="submit"].step-heading, ul.steps .step.done input[type="submit"].step-heading, ul.steps .step.todo input[type="submit"].step-heading,
+  input[type="submit"].icon, .step-form-container .label input[type="submit"].remove, .step-form-container input[type="submit"].user-add, ul.steps .step.active input[type="submit"].step-heading, ul.steps .step.done input[type="submit"].step-heading, ul.steps .step.todo input[type="submit"].step-heading,
   input[type="reset"].icon,
+  .step-form-container .label input[type="reset"].remove,
+  .step-form-container input[type="reset"].user-add,
   ul.steps .step.active input[type="reset"].step-heading,
   ul.steps .step.done input[type="reset"].step-heading,
   ul.steps .step.todo input[type="reset"].step-heading,
   input[type="button"].icon,
+  .step-form-container .label input[type="button"].remove,
+  .step-form-container input[type="button"].user-add,
   ul.steps .step.active input[type="button"].step-heading,
   ul.steps .step.done input[type="button"].step-heading,
   ul.steps .step.todo input[type="button"].step-heading,
   button.icon,
+  .step-form-container .label button.remove,
+  .step-form-container button.user-add,
   ul.steps .step.active button.step-heading,
   ul.steps .step.done button.step-heading,
   ul.steps .step.todo button.step-heading,
   .button.icon,
+  .step-form-container .label .button.remove,
+  .step-form-container .button.user-add,
   ul.steps .step.active .button.step-heading,
   ul.steps .step.done .button.step-heading,
   ul.steps .step.todo .button.step-heading {
     padding-left: 1.35em; }
-    input[type="submit"].icon:before, ul.steps .step.active input[type="submit"].step-heading:before, ul.steps .step.done input[type="submit"].step-heading:before, ul.steps .step.todo input[type="submit"].step-heading:before,
+    input[type="submit"].icon:before, .step-form-container .label input[type="submit"].remove:before, .step-form-container input[type="submit"].user-add:before, ul.steps .step.active input[type="submit"].step-heading:before, ul.steps .step.done input[type="submit"].step-heading:before, ul.steps .step.todo input[type="submit"].step-heading:before,
     input[type="reset"].icon:before,
+    .step-form-container .label input[type="reset"].remove:before,
+    .step-form-container input[type="reset"].user-add:before,
     ul.steps .step.active input[type="reset"].step-heading:before,
     ul.steps .step.done input[type="reset"].step-heading:before,
     ul.steps .step.todo input[type="reset"].step-heading:before,
     input[type="button"].icon:before,
+    .step-form-container .label input[type="button"].remove:before,
+    .step-form-container input[type="button"].user-add:before,
     ul.steps .step.active input[type="button"].step-heading:before,
     ul.steps .step.done input[type="button"].step-heading:before,
     ul.steps .step.todo input[type="button"].step-heading:before,
     button.icon:before,
+    .step-form-container .label button.remove:before,
+    .step-form-container button.user-add:before,
     ul.steps .step.active button.step-heading:before,
     ul.steps .step.done button.step-heading:before,
     ul.steps .step.todo button.step-heading:before,
     .button.icon:before,
+    .step-form-container .label .button.remove:before,
+    .step-form-container .button.user-add:before,
     ul.steps .step.active .button.step-heading:before,
     ul.steps .step.done .button.step-heading:before,
     ul.steps .step.todo .button.step-heading:before {
@@ -3621,20 +3637,28 @@ button,
     button.alt:active,
     .button.alt:active {
       background-color: rgba(144, 144, 144, 0.2); }
-    input[type="submit"].alt.icon:before, ul.steps .step.active input[type="submit"].alt.step-heading:before, ul.steps .step.done input[type="submit"].alt.step-heading:before, ul.steps .step.todo input[type="submit"].alt.step-heading:before,
+    input[type="submit"].alt.icon:before, .step-form-container .label input[type="submit"].alt.remove:before, .step-form-container input[type="submit"].alt.user-add:before, ul.steps .step.active input[type="submit"].alt.step-heading:before, ul.steps .step.done input[type="submit"].alt.step-heading:before, ul.steps .step.todo input[type="submit"].alt.step-heading:before,
     input[type="reset"].alt.icon:before,
+    .step-form-container .label input[type="reset"].alt.remove:before,
+    .step-form-container input[type="reset"].alt.user-add:before,
     ul.steps .step.active input[type="reset"].alt.step-heading:before,
     ul.steps .step.done input[type="reset"].alt.step-heading:before,
     ul.steps .step.todo input[type="reset"].alt.step-heading:before,
     input[type="button"].alt.icon:before,
+    .step-form-container .label input[type="button"].alt.remove:before,
+    .step-form-container input[type="button"].alt.user-add:before,
     ul.steps .step.active input[type="button"].alt.step-heading:before,
     ul.steps .step.done input[type="button"].alt.step-heading:before,
     ul.steps .step.todo input[type="button"].alt.step-heading:before,
     button.alt.icon:before,
+    .step-form-container .label button.alt.remove:before,
+    .step-form-container button.alt.user-add:before,
     ul.steps .step.active button.alt.step-heading:before,
     ul.steps .step.done button.alt.step-heading:before,
     ul.steps .step.todo button.alt.step-heading:before,
     .button.alt.icon:before,
+    .step-form-container .label .button.alt.remove:before,
+    .step-form-container .button.alt.user-add:before,
     ul.steps .step.active .button.alt.step-heading:before,
     ul.steps .step.done .button.alt.step-heading:before,
     ul.steps .step.todo .button.alt.step-heading:before {
@@ -3975,38 +3999,54 @@ button,
   button:active,
   .button:active {
     background-color: #4d4d4d; }
-  input[type="submit"].icon, ul.steps .step.active input[type="submit"].step-heading, ul.steps .step.done input[type="submit"].step-heading, ul.steps .step.todo input[type="submit"].step-heading,
+  input[type="submit"].icon, .step-form-container .label input[type="submit"].remove, .step-form-container input[type="submit"].user-add, ul.steps .step.active input[type="submit"].step-heading, ul.steps .step.done input[type="submit"].step-heading, ul.steps .step.todo input[type="submit"].step-heading,
   input[type="reset"].icon,
+  .step-form-container .label input[type="reset"].remove,
+  .step-form-container input[type="reset"].user-add,
   ul.steps .step.active input[type="reset"].step-heading,
   ul.steps .step.done input[type="reset"].step-heading,
   ul.steps .step.todo input[type="reset"].step-heading,
   input[type="button"].icon,
+  .step-form-container .label input[type="button"].remove,
+  .step-form-container input[type="button"].user-add,
   ul.steps .step.active input[type="button"].step-heading,
   ul.steps .step.done input[type="button"].step-heading,
   ul.steps .step.todo input[type="button"].step-heading,
   button.icon,
+  .step-form-container .label button.remove,
+  .step-form-container button.user-add,
   ul.steps .step.active button.step-heading,
   ul.steps .step.done button.step-heading,
   ul.steps .step.todo button.step-heading,
   .button.icon,
+  .step-form-container .label .button.remove,
+  .step-form-container .button.user-add,
   ul.steps .step.active .button.step-heading,
   ul.steps .step.done .button.step-heading,
   ul.steps .step.todo .button.step-heading {
     padding-left: 1.35em; }
-    input[type="submit"].icon:before, ul.steps .step.active input[type="submit"].step-heading:before, ul.steps .step.done input[type="submit"].step-heading:before, ul.steps .step.todo input[type="submit"].step-heading:before,
+    input[type="submit"].icon:before, .step-form-container .label input[type="submit"].remove:before, .step-form-container input[type="submit"].user-add:before, ul.steps .step.active input[type="submit"].step-heading:before, ul.steps .step.done input[type="submit"].step-heading:before, ul.steps .step.todo input[type="submit"].step-heading:before,
     input[type="reset"].icon:before,
+    .step-form-container .label input[type="reset"].remove:before,
+    .step-form-container input[type="reset"].user-add:before,
     ul.steps .step.active input[type="reset"].step-heading:before,
     ul.steps .step.done input[type="reset"].step-heading:before,
     ul.steps .step.todo input[type="reset"].step-heading:before,
     input[type="button"].icon:before,
+    .step-form-container .label input[type="button"].remove:before,
+    .step-form-container input[type="button"].user-add:before,
     ul.steps .step.active input[type="button"].step-heading:before,
     ul.steps .step.done input[type="button"].step-heading:before,
     ul.steps .step.todo input[type="button"].step-heading:before,
     button.icon:before,
+    .step-form-container .label button.remove:before,
+    .step-form-container button.user-add:before,
     ul.steps .step.active button.step-heading:before,
     ul.steps .step.done button.step-heading:before,
     ul.steps .step.todo button.step-heading:before,
     .button.icon:before,
+    .step-form-container .label .button.remove:before,
+    .step-form-container .button.user-add:before,
     ul.steps .step.active .button.step-heading:before,
     ul.steps .step.done .button.step-heading:before,
     ul.steps .step.todo .button.step-heading:before {
@@ -4051,20 +4091,28 @@ button,
     button.alt:active,
     .button.alt:active {
       background-color: rgba(144, 144, 144, 0.2); }
-    input[type="submit"].alt.icon:before, ul.steps .step.active input[type="submit"].alt.step-heading:before, ul.steps .step.done input[type="submit"].alt.step-heading:before, ul.steps .step.todo input[type="submit"].alt.step-heading:before,
+    input[type="submit"].alt.icon:before, .step-form-container .label input[type="submit"].alt.remove:before, .step-form-container input[type="submit"].alt.user-add:before, ul.steps .step.active input[type="submit"].alt.step-heading:before, ul.steps .step.done input[type="submit"].alt.step-heading:before, ul.steps .step.todo input[type="submit"].alt.step-heading:before,
     input[type="reset"].alt.icon:before,
+    .step-form-container .label input[type="reset"].alt.remove:before,
+    .step-form-container input[type="reset"].alt.user-add:before,
     ul.steps .step.active input[type="reset"].alt.step-heading:before,
     ul.steps .step.done input[type="reset"].alt.step-heading:before,
     ul.steps .step.todo input[type="reset"].alt.step-heading:before,
     input[type="button"].alt.icon:before,
+    .step-form-container .label input[type="button"].alt.remove:before,
+    .step-form-container input[type="button"].alt.user-add:before,
     ul.steps .step.active input[type="button"].alt.step-heading:before,
     ul.steps .step.done input[type="button"].alt.step-heading:before,
     ul.steps .step.todo input[type="button"].alt.step-heading:before,
     button.alt.icon:before,
+    .step-form-container .label button.alt.remove:before,
+    .step-form-container button.alt.user-add:before,
     ul.steps .step.active button.alt.step-heading:before,
     ul.steps .step.done button.alt.step-heading:before,
     ul.steps .step.todo button.alt.step-heading:before,
     .button.alt.icon:before,
+    .step-form-container .label .button.alt.remove:before,
+    .step-form-container .button.alt.user-add:before,
     ul.steps .step.active .button.alt.step-heading:before,
     ul.steps .step.done .button.alt.step-heading:before,
     ul.steps .step.todo .button.alt.step-heading:before {
@@ -4114,9 +4162,32 @@ button,
   display: none !important; }
 
 .step-form-container .label {
-  margin: 0 -1em 0 1em;
+  padding-left: 1em;
   font-weight: bold;
   font-size: 1.1em; }
+  .step-form-container .label .text {
+    padding-top: .4em;
+    float: left; }
+  .step-form-container .label .remove {
+    -moz-transition: background-color 0.07s ease-in-out, color 0.07s ease-in-out;
+    -webkit-transition: background-color 0.07s ease-in-out, color 0.07s ease-in-out;
+    -ms-transition: background-color 0.07s ease-in-out, color 0.07s ease-in-out;
+    transition: background-color 0.07s ease-in-out, color 0.07s ease-in-out;
+    float: right;
+    padding: .4em .7em .4em .7em;
+    border-radius: .2em;
+    color: #b93b37;
+    cursor: pointer; }
+    .step-form-container .label .remove:hover {
+      color: #b93b37;
+      background-color: #f0cdcc; }
+    .step-form-container .label .remove:active {
+      color: #fff !important;
+      background-color: #b93b37; }
+.step-form-container .user-add {
+  color: #4d4d4d !important; }
+  .step-form-container .user-add:before {
+    color: #4d4d4d !important; }
 
 ul.steps {
   list-style-type: none;
