@@ -28,11 +28,9 @@ var TextControl = React.createClass({
 var LabelControl = React.createClass({
     render: function() {
         return (
-            <div className="12u$">
-                <div className="label" widthClass={this.props.widthClass}>
-                    <div className="text">{this.props.text}</div>
-                    <div className="remove" onTouchEnd={this.props.handleRemove} onClick={this.props.handleRemove}></div>
-                </div>
+            <div className={"label 12u$(xsmall) " + this.props.widthClass}>
+                <div className="text">{this.props.text}</div>
+                <div className="remove" onClick={this.props.handleRemove}></div>
             </div>
         );
     }
@@ -51,7 +49,29 @@ var DuplicateFormControl = React.createClass({
     render: function() {
         return (
             <div className={"actions 12u$(xsmall) " + this.props.widthClass}>
-                <div className="button alt fit user-add" onTouchEnd={this.props.handleClick} onClick={this.props.handleClick}>{this.props.text}</div>
+                <div className="button alt fit user-add" onClick={this.props.handleClick}>{this.props.text}</div>
+            </div>
+        );
+    }
+});
+
+var MapControl = React.createClass({
+    map: null,
+    componentDidMount: function() {
+        var mapOptions = {
+            center: {lat: 0, lng: 0},
+            zoom: 12
+        };
+        var map = this.map = new google.maps.Map(this.refs[this.props.id].getDOMNode(), mapOptions);
+        navigator.geolocation.getCurrentPosition(function(position) {
+            map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
+        });
+    },
+    render: function() {
+        return (
+            <div className={"12u$(xsmall) " + this.props.widthClass}>
+                <div className="map" id={this.props.id} ref={this.props.id} >
+                </div>
             </div>
         );
     }
@@ -80,9 +100,12 @@ var ControlRow = React.createClass({
                 id = control.id;
             }
             id = id + "-" + _this.props.formId;
-            var text = control.text.replace(/{{form-id}}/, function(match) {
-                return _this.props.formSequence + 1;
-            });
+            var text = "";
+            if (control.text) {
+                text = control.text.replace(/{{form-id}}/, function(match) {
+                    return _this.props.formSequence + 1;
+                });
+            }
             var value = "";
             if (control.id && _this.props.data && _this.props.data[control.id]) {
                 value = _this.props.data[control.id];
@@ -100,6 +123,8 @@ var ControlRow = React.createClass({
                     return <LabelControl handleRemove={_this.handleRemove} widthClass={widthClass} text={text} key={id} />;
                 case "duplicate-form":
                     return <DuplicateFormControl widthClass={widthClass} id={id} text={control.text} handleClick={_this.props.handleClick} key={id} />;
+                case "map":
+                    return <MapControl widthClass={widthClass} id={id} key={id} />;
                 default:
                     return null;
             }
@@ -133,6 +158,7 @@ var Form = React.createClass({
     updateData: function(newData) {
         var data = this.state.data;
         data[newData.id] = newData;
+        console.log(JSON.stringify(data));
         this.setState({data: data});
     },
     removeData: function(formId) {
@@ -159,7 +185,9 @@ var Form = React.createClass({
             var data = this.state.data[k];
             Array.prototype.push.apply(rows, this.props.controls.map(makeCreateRow(data, i++)));
         }
-        Array.prototype.push.apply(rows, this.props.actions.map(makeCreateRow({"id": "a"})));
+        if (this.props.actions) {
+            Array.prototype.push.apply(rows, this.props.actions.map(makeCreateRow({"id": "a"})));
+        }
         return (
             <div className="12u$">
                 {rows}

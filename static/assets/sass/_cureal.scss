@@ -49,6 +49,11 @@
             color: darken(_palette(accent2, bg), 5) !important;
         }
     }
+
+    .map {
+        height: 50em;
+        border-radius: .3em;
+    }
 }
 
 ul.steps {

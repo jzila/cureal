@@ -9,6 +9,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEdVKFDEN8e1GDDW-6EU8oy6YBNLsJsrg"></script>
         <script type="text/jsx" src="react/components/Controls.jsx"></script>
         <script type="text/jsx" src="react/components/Steps.jsx"></script>
         <script type="text/javascript" src="bower_components/classnames/index.js"></script>
@@ -87,7 +88,19 @@
                 {
                     text: "Which Home?",
                     stepState: StepState.DONE,
-                    stepActive: StepActive.INACTIVE
+                    stepActive: StepActive.INACTIVE,
+                    form: {
+                        controls: [
+                            [{
+                                "width": 12,
+                                "type": "map",
+                                "id": "map"
+                            }]
+                        ],
+                        data: [
+                            {}
+                        ]
+                    }
                 },
                 {
                     text: "Who's Buying?",
@@ -147,7 +160,25 @@
                 {
                     text: "How Will You Pay?",
                     stepState: StepState.TODO,
-                    stepActive: StepActive.INACTIVE
+                    stepActive: StepActive.INACTIVE,
+                    form: {
+                        controls: [
+                            [{
+                                "width": 12,
+                                "type": "radio",
+                                "id": "cash-or-card",
+                                "text": "Cash"
+                            }],
+                            [{
+                                "width": 12,
+                                "type": "radio",
+                                "id": "cash-or-card",
+                                "text": "Mortgage"
+                            }]
+                        ],
+                        data: [
+                        ]
+                    }
                 },
                 {
                     text: "Sweeten the Deal",

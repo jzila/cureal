@@ -4189,6 +4189,9 @@ button,
   color: #4d4d4d !important; }
   .step-form-container .user-add:before {
     color: #4d4d4d !important; }
+.step-form-container .map {
+  height: 50em;
+  border-radius: .3em; }
 
 ul.steps {
   list-style-type: none;

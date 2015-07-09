@@ -51,7 +51,7 @@ var StepContainer = React.createClass({
         });
         return (
             <li className={classes}>
-                <div onTouchEnd={this.handleClick} onClick={this.handleClick} className="step-heading">{this.props.text}</div>
+                <div onClick={this.handleClick} className="step-heading">{this.props.text}</div>
                 <ActiveStep initialStepActive={this.state.stepActive} form={this.props.form} ref="activeStep" />
             </li>
         );
@@ -61,10 +61,9 @@ var StepContainer = React.createClass({
 var StepList = React.createClass({
     handleClick: function(index) {
         var stepListThis = this;
-        Object.keys(this.refs).map(function(k) {
-            var child = stepListThis.refs[k];
-            child.setInactive();
-        });
+        for (var k in this.refs) {
+            this.refs[k].setInactive();
+        }
     },
     render: function() {
         var stepListThis = this;
