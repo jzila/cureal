@@ -12,7 +12,7 @@ var ActiveStep = React.createClass({
         });
         return (
             <div className={classes}>
-                <Form data={this.props.form.data} controls={this.props.form.controls} actions={this.props.form.actions} />
+                <Form data={this.props.form.data} controls={this.props.form.controls} actions={this.props.form.actions} isActive={this.state.stepActive === StepActive.ACTIVE} />
             </div>
         );
     }

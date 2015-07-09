@@ -67,6 +67,21 @@ var MapControl = React.createClass({
             map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
         });
     },
+    resetMap: function() {
+        var map = this.map;
+        x = map.getZoom();
+        c = map.getCenter();
+        google.maps.event.trigger(map, 'resize');
+        map.setZoom(x);
+        map.setCenter(c); 
+    },
+    shouldComponentUpdate: function(nextProps, nextState) {
+        if (nextProps.isActive === true) {
+            this.resetMap();
+            return false;
+        }
+        return true;
+    },
     render: function() {
         return (
             <div className={"12u$(xsmall) " + this.props.widthClass}>
@@ -124,7 +139,7 @@ var ControlRow = React.createClass({
                 case "duplicate-form":
                     return <DuplicateFormControl widthClass={widthClass} id={id} text={control.text} handleClick={_this.props.handleClick} key={id} />;
                 case "map":
-                    return <MapControl widthClass={widthClass} id={id} key={id} />;
+                    return <MapControl widthClass={widthClass} id={id} key={id} isActive={_this.props.isActive} />;
                 default:
                     return null;
             }
@@ -177,7 +192,7 @@ var Form = React.createClass({
             var key = 0;
             var form_id = data.id;
             return function(row) {
-                return <ControlRow row={row} handleRemove={_this.removeData} handleClick={_this.addData} handleChange={_this.updateData} key={"" + form_id + "-" + key++} formId={form_id} data={data} formSequence={formSequence} />;
+                return <ControlRow row={row} handleRemove={_this.removeData} handleClick={_this.addData} handleChange={_this.updateData} key={"" + form_id + "-" + key++} formId={form_id} data={data} formSequence={formSequence} isActive={_this.props.isActive} />;
             };
         };
         var i = 0;
