@@ -4,9 +4,13 @@
     display: none !important;
 }
 
+#header {
+    border-bottom: solid 1px _palette(accent2, border);
+}
+
 .step-form-container {
     .label {
-        padding-left: 1em;
+        padding-left: 1.75em;
         font-weight: bold;
         font-size: 1.1em;
 

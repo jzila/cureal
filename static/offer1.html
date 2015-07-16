@@ -196,6 +196,34 @@
                 <StepPanel data={stepData} />,
                 document.getElementById('main')
             );
+            var $document = $(document);
+            var positionHeader = function(prevHeight, newHeight) {
+                var $header = $("#header");
+                var diff = newHeight - prevHeight;
+                var currHeaderHeight = $header.position().top;
+                var headerHeight = -$header.height() - 1;
+                var finalHeight = currHeaderHeight - diff;
+                if (diff > 0) {
+                    if (finalHeight < headerHeight) {
+                        finalHeight = headerHeight;
+                    }
+                } else {
+                    if (finalHeight > 0) {
+                        finalHeight = 0;
+                    }
+                }
+                if (finalHeight !== currHeaderHeight) {
+                    $header.css('top', finalHeight);
+                }
+            };
+            $document.ready(function() {
+                var prevScrollHeight = $document.scrollTop();
+                $(window).scroll(function() {
+                    var scrollHeight = $document.scrollTop();
+                    positionHeader(prevScrollHeight, scrollHeight);
+                    prevScrollHeight = scrollHeight;
+                });
+            });
         </script>
 
 	</body>

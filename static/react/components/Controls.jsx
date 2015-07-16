@@ -60,7 +60,8 @@ var MapControl = React.createClass({
     componentDidMount: function() {
         var mapOptions = {
             center: {lat: 0, lng: 0},
-            zoom: 12
+            zoom: 12,
+            disableDefaultUI: true
         };
         var map = this.map = new google.maps.Map(this.refs[this.props.id].getDOMNode(), mapOptions);
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -91,6 +92,16 @@ var MapControl = React.createClass({
         );
     }
 });
+
+var controlLookupTable = {
+    "name": TextControl,
+    "ssn": TextControl,
+    "email": EmailControl,
+    "phone": TextControl,
+    "label": LabelControl,
+    "duplicate-form": DuplicateFormControl,
+    "map": MapControl
+};
 
 var ControlRow = React.createClass({
     handleChange: function(id, value) {
@@ -125,24 +136,24 @@ var ControlRow = React.createClass({
             if (control.id && _this.props.data && _this.props.data[control.id]) {
                 value = _this.props.data[control.id];
             }
-            switch (control.type) {
-                case "name":
-                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} key={id}/>;
-                case "ssn":
-                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} key={id}/>;
-                case "email":
-                    return <EmailControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} key={id}/>;
-                case "phone":
-                    return <TextControl handleChange={_this.handleChange} widthClass={widthClass} id={id} text={text} value={value} key={id}/>;
-                case "label":
-                    return <LabelControl handleRemove={_this.handleRemove} widthClass={widthClass} text={text} key={id} />;
-                case "duplicate-form":
-                    return <DuplicateFormControl widthClass={widthClass} id={id} text={control.text} handleClick={_this.props.handleClick} key={id} />;
-                case "map":
-                    return <MapControl widthClass={widthClass} id={id} key={id} isActive={_this.props.isActive} />;
-                default:
-                    return null;
+            var props = {
+                "widthClass": widthClass,
+                "id": id,
+                "key": id,
+                "text": text,
+                "value": value,
+                "handleChange": _this.handleChange,
+                "handleRemove": _this.handleRemove,
+                "isActive": _this.props.isActive,
+            };
+            if (_this.props.handleClick) {
+                props.handleClick = _this.props.handleClick;
             }
+            var reactControl = controlLookupTable[control.type];
+            if (reactControl) {
+                return React.createElement(reactControl, props);
+            }
+            return null;
         });
         return (
             <div className="row uniform">
