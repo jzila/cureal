@@ -105,9 +105,8 @@ var controlLookupTable = {
 
 var ControlRow = React.createClass({
     handleChange: function(id, value) {
-        var data = jQuery.extend({}, this.props.data);
-        data[id] = value;
-        this.props.handleChange(data);
+        this.props.data[id] = value;
+        this.props.handleChange(this.props.data);
     },
     handleRemove: function() {
         this.props.handleRemove(this.props.formId);

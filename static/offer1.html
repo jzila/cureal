@@ -77,18 +77,13 @@
         <script type="text/jsx">
             var StepState = {
                 TODO: 0,
-                DONE: 1
-            };
-            var StepActive = {
-                INACTIVE: 0,
-                ACTIVE: 1,
+                DONE: 1,
                 DISABLED: 2
             };
             var stepData = [
                 {
                     text: "Which Home?",
                     stepState: StepState.DONE,
-                    stepActive: StepActive.INACTIVE,
                     form: {
                         controls: [
                             [{
@@ -105,7 +100,6 @@
                 {
                     text: "Who's Buying?",
                     stepState: StepState.TODO,
-                    stepActive: StepActive.INACTIVE,
                     form: {
                         controls: [
                             [{
@@ -160,7 +154,6 @@
                 {
                     text: "How Will You Pay?",
                     stepState: StepState.TODO,
-                    stepActive: StepActive.INACTIVE,
                     form: {
                         controls: [
                             [{
@@ -183,11 +176,10 @@
                 {
                     text: "Sweeten the Deal",
                     stepState: StepState.TODO,
-                    stepActive: StepActive.INACTIVE
                 },
                 {
                     text: "Create your Offer! (incomplete)",
-                    stepActive: StepActive.DISABLED,
+                    stepState: StepState.DISABLED,
                     submit: true
                 },
             ];
