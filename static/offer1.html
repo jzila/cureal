@@ -89,7 +89,10 @@
                             [{
                                 "width": 12,
                                 "type": "map",
-                                "id": "map"
+                                "id": "map",
+                                "homes": [
+                                    {id: "home123", lat: 47.62349, lng:-122.33046}
+                                ]
                             }]
                         ],
                         data: [
@@ -159,14 +162,18 @@
                             [{
                                 "width": 12,
                                 "type": "radio",
-                                "id": "cash-or-card",
+                                "id": "cash",
+                                "name": "cash-or-card",
                                 "text": "Cash"
                             }],
                             [{
                                 "width": 12,
                                 "type": "radio",
-                                "id": "cash-or-card",
-                                "text": "Mortgage"
+                                "id": "mortgage",
+                                "name": "cash-or-card",
+                                "text": "Mortgage",
+                                "disabled": true,
+                                "helptip": "We do not yet support buying a home with financing."
                             }]
                         ],
                         data: [
@@ -193,7 +200,7 @@
                 var $header = $("#header");
                 var diff = newHeight - prevHeight;
                 var currHeaderHeight = $header.position().top;
-                var headerHeight = -$header.height() - 1;
+                var headerHeight = -$header.height() - 2;
                 var finalHeight = currHeaderHeight - diff;
                 if (diff > 0) {
                     if (finalHeight < headerHeight) {

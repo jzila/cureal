@@ -9,9 +9,10 @@ var InputControl = React.createClass({
             "12u$(xsmall)": true
         };
         classes[this.props.widthClass] = true;
+        var name = this.props.name || this.props.id;
         return (
             <div className={classNames(classes)}>
-                <input type={this.props.inputType} name={this.props.id} id={this.props.id} placeholder={this.props.text} defaultValue={this.props.value} onChange={this.handleChange} />
+                <input type={this.props.inputType} name={name} id={this.props.id} placeholder={this.props.text} defaultValue={this.props.value} onChange={this.handleChange} />
             </div>
         );
     }
@@ -55,18 +56,80 @@ var DuplicateFormControl = React.createClass({
     }
 });
 
+var bigIconSize = new google.maps.Size(32, 32);
+var smallIconSize = new google.maps.Size(24, 24);
+var bigIcon = new google.maps.MarkerImage(
+    "https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png",
+    null, /* size is determined at runtime */
+    null, /* origin is 0,0 */
+    null, /* anchor is bottom center of the scaled image */
+    new google.maps.Size(33, 60)
+);
+var smallIcon = new google.maps.MarkerImage(
+    "https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png",
+    null, /* size is determined at runtime */
+    null, /* origin is 0,0 */
+    null, /* anchor is bottom center of the scaled image */
+    new google.maps.Size(22, 40)
+);
+
 var MapControl = React.createClass({
     map: null,
+    markers: [],
+    mapMarkerClicked: function(i) {
+        this.setState({selectedMarker: i});
+        console.log("Selected home " + this.state.homes[i].id);
+    },
+    mapClicked: function() {
+        this.setState({selectedMarker: -1});
+        console.log("Deselected home");
+    },
+    getInitialState: function() {
+        var homes = this.props.homes || [];
+        return {
+            homes: homes,
+            markers: [],
+            selectedMarker: -1,
+        };
+    },
+    markersFromHomes: function(homes, markers) {
+        var _this = this;
+        for (var i=0; i<markers.length; i++) {
+            markers[i].setMap(null);
+        }
+        markers = [];
+        for (var j=0; j<homes.length; j++) {
+            var home = homes[j];
+            var marker = new google.maps.Marker({
+                position: {lat: home.lat, lng: home.lng},
+                map: this.map,
+                title: 'home'
+            });
+            markers.push(marker);
+            google.maps.event.addListener(marker, 'click', this.mapMarkerClicked.bind(this, j));
+            if (j == this.state.selectedMarker) {
+                marker.setIcon(bigIcon);
+            } else {
+                marker.setIcon(smallIcon);
+            }
+        }
+        return markers;
+    },
     componentDidMount: function() {
+        var _this = this;
         var mapOptions = {
             center: {lat: 0, lng: 0},
             zoom: 12,
             disableDefaultUI: true
         };
         var map = this.map = new google.maps.Map(this.refs[this.props.id].getDOMNode(), mapOptions);
+        google.maps.event.addListener(map, 'click', function() {
+            _this.mapClicked();
+        });
         navigator.geolocation.getCurrentPosition(function(position) {
             map.setCenter({lat: position.coords.latitude, lng: position.coords.longitude});
         });
+        this.markers = this.markersFromHomes(this.state.homes, this.markers);
     },
     resetMap: function() {
         var map = this.map;
@@ -77,9 +140,18 @@ var MapControl = React.createClass({
         map.setCenter(c); 
     },
     shouldComponentUpdate: function(nextProps, nextState) {
-        if (nextProps.isActive === true) {
+        if (this.props.isActive === false && nextProps.isActive === true) {
             this.resetMap();
             return false;
+        }
+        if (this.state.selectedMarker != nextState.selectedMarker && this.markers.length) {
+            var map = this.map;
+            if (this.state.selectedMarker >= 0) {
+                this.markers[this.state.selectedMarker].setIcon(smallIcon);
+            }
+            if (nextState.selectedMarker >= 0) {
+                this.markers[nextState.selectedMarker].setIcon(bigIcon);
+            }
         }
         return true;
     },
@@ -125,6 +197,10 @@ var ControlRow = React.createClass({
                 id = control.id;
             }
             id = id + "-" + _this.props.formId;
+            var name = id;
+            if (control.name) {
+                name = name + "-" + _this.props.formId;
+            }
             var text = "";
             if (control.text) {
                 text = control.text.replace(/{{form-id}}/, function(match) {
@@ -135,7 +211,7 @@ var ControlRow = React.createClass({
             if (control.id && _this.props.data && _this.props.data[control.id]) {
                 value = _this.props.data[control.id];
             }
-            var props = {
+            var props = jQuery.extend({}, control, {
                 "widthClass": widthClass,
                 "id": id,
                 "key": id,
@@ -144,7 +220,8 @@ var ControlRow = React.createClass({
                 "handleChange": _this.handleChange,
                 "handleRemove": _this.handleRemove,
                 "isActive": _this.props.isActive,
-            };
+                "handleSelectHome": _this.props.handleSelectHome,
+            });
             if (_this.props.handleClick) {
                 props.handleClick = _this.props.handleClick;
             }
@@ -172,7 +249,8 @@ var Form = React.createClass({
                 obj[i++] = dd;
                 return obj;
             }, {}),
-            nextIndex: i
+            nextIndex: i,
+            selectedHome: null
         };
     },
     addData: function() {
