@@ -1,17 +1,39 @@
 var InputControl = React.createClass({
-    handleChange: function(evt) {
-        var key = this.props.id.substring(0, this.props.id.lastIndexOf("-"));
+    change: function(evt, sanitizeValueHandler) {
         var value = evt.target.value;
-        if (this.props.formatChange) {
-            value = this.props.formatChange(evt);
+        if (this.props.sanitizeData) {
+            value = this.props.sanitizeData(value);
         }
-        this.props.handleChange(key, value);
+        if (sanitizeValueHandler) {
+            value = sanitizeValueHandler(value);
+        }
+        var key = this.props.name.substring(0, this.props.name.lastIndexOf("-"));
+        this.props.handleChange(this.props.formId, key, value);
+        if (this.props.formatValue) {
+            evt.target.value = this.props.formatValue(value);
+        } else {
+            evt.target.value = value;
+        }
+    },
+    backspaceHandler: function(value) {
+        return value.substring(0, value.length - 1);
+    },
+    handleKeyDown: function(evt) {
+        switch (evt.keyCode) {
+            case 8:
+                this.change(evt, this.backspaceHandler);
+                evt.preventDefault();
+                break;
+        }
+    },
+    handleChange: function(evt) {
+        this.change(evt, null);
     },
     render: function() {
         var name = this.props.name || this.props.id;
         return (
             <div className={"12u$(xsmall) " + this.props.widthClass}>
-                <input type={this.props.inputType} name={name} id={this.props.id} placeholder={this.props.text} defaultValue={this.props.value} onKeyDown={this.handleChange} />
+                <input type={this.props.inputType} name={name} id={this.props.id} placeholder={this.props.text} defaultValue={this.props.value} onKeyDown={this.handleKeyDown} onChange={this.handleChange} />
             </div>
         );
     }
@@ -26,6 +48,7 @@ var TextControl = React.createClass({
 });
 
 var SSNControl = React.createClass({
+    validRegex: /[^0-9]/g,
     ssnRegex: /(\d{0,3})(\d{0,3})(\d{0,3}).*/,
     replaceSSN: function(m, p1, p2, p3) {
         return p1 + (p1.length==3 ?
@@ -34,42 +57,24 @@ var SSNControl = React.createClass({
                                 '') :
                     '');
     },
-    formatChange: function(evt) {
-        var value = evt.target.value;
-        var keycode = evt.keyCode;
-        var valid = 
-            (keycode > 47 && keycode < 58)   || // number keys
-            keycode == 32 || keycode == 13   || // spacebar & return key(s) (if you want to allow carriage returns)
-            (keycode > 64 && keycode < 91)   || // letter keys
-            (keycode > 95 && keycode < 112)  || // numpad keys
-            (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
-            (keycode > 218 && keycode < 223);   // [\]' (in order)
-
-        if (valid) {
-            evt.preventDefault();
-            value += String.fromCharCode(evt.keyCode);
-        }
-        var sanitized = value.replace(/[^0-9]/g, '').substr(0, 9);
-
-        switch (evt.keyCode) {
-            case 8:
-                sanitized = sanitized.substring(0, sanitized.length - 1);
-                evt.preventDefault();
-                break;
-        }
-
-        evt.target.value = sanitized.replace(this.ssnRegex, this.replaceSSN);
-
-        return sanitized;
+    sanitizeData: function(value) {
+        return value.replace(this.validRegex, '').substr(0, 9);
+    },
+    formatValue: function(value) {
+        return value.replace(this.ssnRegex, this.replaceSSN);
     },
     render: function() {
         return (
-            <TextControl {...this.props} formatChange={this.formatChange} />
+            <TextControl {...this.props} formatValue={this.formatValue} sanitizeData={this.sanitizeData} />
         );
     }
 });
 
 var RadioControl = React.createClass({
+    handleChange: function(evt) {
+        var key = this.props.name.substring(0, this.props.name.lastIndexOf("-"));
+        this.props.handleChange(this.props.formId, key, evt.target.value);
+    },
     render: function() {
         var classes = {
             "radio": true,
@@ -91,11 +96,14 @@ var RadioControl = React.createClass({
 });
 
 var LabelControl = React.createClass({
+    handleRemove: function() {
+        this.props.handleRemove(this.props.formId);
+    },
     render: function() {
         return (
             <div className={"label 12u$(xsmall) " + this.props.widthClass}>
                 <div className="text">{this.props.text}</div>
-                <div className="remove" onClick={this.props.handleRemove}></div>
+                <div className="remove" onClick={this.handleRemove}></div>
             </div>
         );
     }
@@ -105,7 +113,7 @@ var LabelControl = React.createClass({
 var EmailControl = React.createClass({
     render: function() {
         return (
-            <InputControl inputType="email" id={this.props.id} name={this.props.id} text={this.props.text} widthClass={this.props.widthClass} value={this.props.value} handleChange={this.props.handleChange} />
+            <InputControl {...this.props} inputType="email" />
         );
     }
 });
@@ -239,13 +247,6 @@ var controlLookupTable = {
 };
 
 var ControlRow = React.createClass({
-    handleChange: function(id, value) {
-        this.props.data[id] = value;
-        this.props.handleChange(this.props.data);
-    },
-    handleRemove: function() {
-        this.props.handleRemove(this.props.formId);
-    },
     render: function() {
         var _this = this;
         var width=0;
@@ -278,11 +279,12 @@ var ControlRow = React.createClass({
                 "widthClass": widthClass,
                 "name": name,
                 "id": id,
+                "formId": _this.props.formId,
                 "key": id,
                 "text": text,
                 "value": value,
-                "handleChange": _this.handleChange,
-                "handleRemove": _this.handleRemove,
+                "handleChange": _this.props.handleChange,
+                "handleRemove": _this.props.handleRemove,
                 "isActive": _this.props.isActive,
                 "handleSelectHome": _this.props.handleSelectHome,
             });
@@ -322,11 +324,14 @@ var Form = React.createClass({
         data[this.state.nextIndex] = {"id": this.state.nextIndex};
         this.setState({data: data, nextIndex: this.state.nextIndex + 1});
     },
-    updateData: function(newData) {
+    updateData: function(formId, keyId, value) {
         var data = this.state.data;
-        data[newData.id] = newData;
-        console.log(JSON.stringify(data));
-        this.setState({data: data});
+        var curVal = data[formId][keyId];
+        if (value !== curVal) {
+            data[formId][keyId] = value;
+            console.log(JSON.stringify(data));
+            this.setState({data: data});
+        }
     },
     removeData: function(formId) {
         var data = this.state.data;
