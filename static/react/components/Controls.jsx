@@ -21,8 +21,10 @@ var InputControl = React.createClass({
     handleKeyDown: function(evt) {
         switch (evt.keyCode) {
             case 8:
-                this.change(evt, this.backspaceHandler);
-                evt.preventDefault();
+                if (window.getSelection().type !== 'Range') {
+                    this.change(evt, this.backspaceHandler);
+                    evt.preventDefault();
+                }
                 break;
         }
     },
@@ -114,6 +116,14 @@ var EmailControl = React.createClass({
     render: function() {
         return (
             <InputControl {...this.props} inputType="email" />
+        );
+    }
+});
+
+var PhoneControl = React.createClass({
+    render: function() {
+        return (
+            <InputControl {...this.props} inputType="tel" />
         );
     }
 });
@@ -239,7 +249,7 @@ var controlLookupTable = {
     "name": TextControl,
     "ssn": SSNControl,
     "email": EmailControl,
-    "phone": TextControl,
+    "phone": PhoneControl,
     "label": LabelControl,
     "radio": RadioControl,
     "duplicate-form": DuplicateFormControl,
@@ -329,7 +339,6 @@ var Form = React.createClass({
         var curVal = data[formId][keyId];
         if (value !== curVal) {
             data[formId][keyId] = value;
-            console.log(JSON.stringify(data));
             this.setState({data: data});
         }
     },
@@ -341,6 +350,12 @@ var Form = React.createClass({
         } else {
             this.setState({data: data});
         }
+    },
+    componentDidUpdate: function(prevProps, prevState) {
+        this.dispatchData();
+    },
+    dispatchData: function() {
+        console.log(JSON.stringify(this.state.data));
     },
     render: function() {
         var rows = [];

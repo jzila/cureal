@@ -21,6 +21,7 @@
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],
+	input[type="tel"],
 	select,
 	textarea {
 		@include vendor('appearance', 'none');
@@ -36,7 +37,10 @@
 		width: 100%;
 
 		&:invalid {
-			box-shadow: none;
+			border-color: _palette(accent4, bg) !important;
+            &:focus {
+                box-shadow: 0 0 0 _size(border-width) _palette(accent4, bg) !important;
+            }
 		}
 
 		&:focus {
@@ -71,6 +75,7 @@
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],
+	input[type="tel"],
 	select {
 		height: _size(element-height);
 	}

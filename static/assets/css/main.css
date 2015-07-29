@@ -3152,6 +3152,7 @@ label {
 input[type="text"],
 input[type="password"],
 input[type="email"],
+input[type="tel"],
 select,
 textarea {
   -moz-appearance: none;
@@ -3171,12 +3172,21 @@ textarea {
   input[type="text"]:invalid,
   input[type="password"]:invalid,
   input[type="email"]:invalid,
+  input[type="tel"]:invalid,
   select:invalid,
   textarea:invalid {
-    box-shadow: none; }
+    border-color: #CD5A56 !important; }
+    input[type="text"]:invalid:focus,
+    input[type="password"]:invalid:focus,
+    input[type="email"]:invalid:focus,
+    input[type="tel"]:invalid:focus,
+    select:invalid:focus,
+    textarea:invalid:focus {
+      box-shadow: 0 0 0 1px #CD5A56 !important; }
   input[type="text"]:focus,
   input[type="password"]:focus,
   input[type="email"]:focus,
+  input[type="tel"]:focus,
   select:focus,
   textarea:focus {
     border-color: #5AA6ED;
@@ -3211,6 +3221,7 @@ textarea {
 input[type="text"],
 input[type="password"],
 input[type="email"],
+input[type="tel"],
 select {
   height: 2.75em; }
 
