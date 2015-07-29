@@ -75,7 +75,8 @@ var SSNControl = React.createClass({
 var RadioControl = React.createClass({
     handleChange: function(evt) {
         var key = this.props.name.substring(0, this.props.name.lastIndexOf("-"));
-        this.props.handleChange(this.props.formId, key, evt.target.value);
+        var id = this.props.id.substring(0, this.props.id.lastIndexOf("-"));
+        this.props.handleChange(this.props.formId, key, id);
     },
     render: function() {
         var classes = {
@@ -90,7 +91,7 @@ var RadioControl = React.createClass({
         }
         return (
             <div className={classNames(classes)}>
-                <input type="radio" name={this.props.name} id={this.props.id} onChange={this.handleChange} disabled={this.props.disabled} checked={this.props.checked} />
+                <input type="radio" name={this.props.name} id={this.props.id} onChange={this.handleChange} disabled={this.props.disabled} checked={this.props.checked} value={this.props.value} />
                 <label className="12u$" htmlFor={this.props.id}>{this.props.text} {helpTip}</label>
             </div>
         );
@@ -281,9 +282,11 @@ var ControlRow = React.createClass({
                     return _this.props.formSequence + 1;
                 });
             }
-            var value = "";
-            if (control.id && _this.props.data && _this.props.data[control.id]) {
-                value = _this.props.data[control.id];
+            var value = control.value || "";
+            var checked = false;
+            if (control.name && _this.props.data && _this.props.data[control.name]) {
+                value = _this.props.data[control.name];
+                checked = (value === control.value);
             }
             var props = jQuery.extend({}, control, {
                 "widthClass": widthClass,
@@ -293,6 +296,7 @@ var ControlRow = React.createClass({
                 "key": id,
                 "text": text,
                 "value": value,
+                "checked": checked,
                 "handleChange": _this.props.handleChange,
                 "handleRemove": _this.props.handleRemove,
                 "isActive": _this.props.isActive,
