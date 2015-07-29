@@ -34,7 +34,7 @@ var InputControl = React.createClass({
     render: function() {
         var name = this.props.name || this.props.id;
         return (
-            <div className={"12u$(xsmall) " + this.props.widthClass}>
+            <div className={"12u$(xsmall) " + this.props.widthClass + " " + this.props.className}>
                 <input type={this.props.inputType} name={name} id={this.props.id} placeholder={this.props.text} defaultValue={this.props.value} onKeyDown={this.handleKeyDown} onChange={this.handleChange} />
             </div>
         );
@@ -156,9 +156,54 @@ var EmailControl = React.createClass({
 });
 
 var PhoneControl = React.createClass({
+    validRegex: /[^0-9]/g,
+    phoneRegex: /(\d{0,3})(\d{0,3})(\d{0,4}).*/,
+    replacePhone: function(m, p1, p2, p3) {
+        return p1 + (p1.length==3 ?
+                    '-' + p2 + (p2.length == 3 ?
+                                '-' + p3 :
+                                '') :
+                    '');
+    },
+    sanitizeData: function(value) {
+        return value.replace(this.validRegex, '').substr(0, 10);
+    },
+    formatValue: function(value) {
+        return value.replace(this.phoneRegex, this.replacePhone);
+    },
     render: function() {
         return (
-            <InputControl {...this.props} inputType="tel" />
+            <InputControl {...this.props} inputType="tel" formatValue={this.formatValue} sanitizeData={this.sanitizeData} />
+        );
+    }
+});
+
+var MoneyControl = React.createClass({
+    validRegex: /[^0-9]/g,
+    moneyRegex: /(\d{0,3})(\d{0,3})(\d{0,3})/,
+    replaceMoney: function(m, p1, p2, p3) {
+        return p1 + (p1.length===3 && p2.length > 0 ?
+                    ',' + p2 + (p2.length === 3 && p3.length > 0 ?
+                                ',' + p3 :
+                                '') :
+                    '');
+    },
+    reverseString: function(val) {
+        var o = '';
+        for (i=val.length - 1; i>=0; --i) {
+            o += val[i];
+        }
+        return o;
+    },
+    sanitizeData: function(value) {
+        return value.replace(this.validRegex, '');
+    },
+    formatValue: function(value) {
+        return this.reverseString(this.reverseString(value).replace(this.moneyRegex, this.replaceMoney));
+    },
+    render: function() {
+        return (
+            <InputControl {...this.props} className="money" inputType="num" formatValue={this.formatValue} sanitizeData={this.sanitizeData} />
         );
     }
 });
@@ -285,7 +330,7 @@ var controlLookupTable = {
     "ssn": SSNControl,
     "email": EmailControl,
     "phone": PhoneControl,
-    "money": TextControl,
+    "money": MoneyControl,
     "remove-label": RemoveLabelControl,
     "label": LabelControl,
     "radio": RadioControl,
