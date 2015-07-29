@@ -107,7 +107,7 @@
                         controls: [
                             [{
                                 "width": 12,
-                                "type": "label",
+                                "type": "remove-label",
                                 "text": "Buyer {{form-id}}"
                             }],
                             [{
@@ -186,6 +186,39 @@
                 {
                     text: "Sweeten the Deal",
                     stepState: StepState.TODO,
+                    form: {
+                        controls: [
+                            [{
+                                "width": 12,
+                                "type": "label",
+                                "text": "Earnest Money:"
+                            },
+                            {
+                                "width": 12,
+                                "type": "money",
+                                "id": "earnest-money",
+                                "text": "Earnest Money",
+                                "helptip": "Cash you're willing to leave on the table if the purchase cannot close due to your action. Usually at least 3-5% of the home price.",
+                            }],
+                            [{
+                                "width": 12,
+                                "type": "check",
+                                "id": "waive-inspection",
+                                "text": "Waive Inspection",
+                                "helptip": "Waive the right to cancel the purchase due to the inspection.",
+                            }],
+                            [{
+                                "width": 12,
+                                "type": "check",
+                                "id": "waive-disclosure",
+                                "text": "Waive Disclosure: Not Recommended",
+                                "helptip": "Waive the right to cancel the purchase due to the seller's disclosure.",
+                            }]
+                        ],
+                        data: [
+                            {"waive-inspection": true}
+                        ]
+                    }
                 },
                 {
                     text: "Create your Offer! (incomplete)",

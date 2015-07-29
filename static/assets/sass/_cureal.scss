@@ -9,14 +9,19 @@
 }
 
 .step-form-container {
-    margin-top: 1em;
+    margin-top: 1.5em;
+    margin-bottom: 2em;
 
-    .radio {
-        padding-left: 2.3em;
+    .radio,.check {
         margin-top: 1em;
         label {
             font-weight: bold;
             font-size: 1.1em;
+            padding-left: 3.1em;
+
+            &:before {
+                left: .9em;
+            }
 
             .helptip {
                 &:before {
@@ -40,12 +45,12 @@
     }
 
     .label {
-        padding-left: 1.75em;
         font-weight: bold;
         font-size: 1.1em;
 
         .text {
-            padding-top: .4em;
+            padding-top: .3em;
+            padding-left: .75em;
             float: left;
         }
 

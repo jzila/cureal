@@ -98,7 +98,32 @@ var RadioControl = React.createClass({
     }
 });
 
-var LabelControl = React.createClass({
+var CheckControl = React.createClass({
+    handleChange: function(evt) {
+        var key = this.props.name.substring(0, this.props.name.lastIndexOf("-"));
+        this.props.handleChange(this.props.formId, key, !this.props.checked);
+    },
+    render: function() {
+        var classes = {
+            "check": true,
+            "12u$(xsmall)": true,
+            "disabled": this.props.disabled
+        };
+        classes[this.props.widthClass] = true;
+        var helpTip = null;
+        if (this.props.helptip) {
+            helpTip = <span className="helptip">{this.props.helptip}</span>;
+        }
+        return (
+            <div className={classNames(classes)}>
+                <input type="checkbox" name={this.props.name} id={this.props.id} onChange={this.handleChange} disabled={this.props.disabled} checked={this.props.checked} value={this.props.value} />
+                <label className="12u$" htmlFor={this.props.id}>{this.props.text} {helpTip}</label>
+            </div>
+        );
+    }
+});
+
+var RemoveLabelControl = React.createClass({
     handleRemove: function() {
         this.props.handleRemove(this.props.formId);
     },
@@ -112,6 +137,15 @@ var LabelControl = React.createClass({
     }
 });
 
+var LabelControl = React.createClass({
+    render: function() {
+        return (
+            <div className={"label 12u$(xsmall) " + this.props.widthClass}>
+                <div className="text">{this.props.text}</div>
+            </div>
+        );
+    }
+});
 
 var EmailControl = React.createClass({
     render: function() {
@@ -251,8 +285,11 @@ var controlLookupTable = {
     "ssn": SSNControl,
     "email": EmailControl,
     "phone": PhoneControl,
+    "money": TextControl,
+    "remove-label": RemoveLabelControl,
     "label": LabelControl,
     "radio": RadioControl,
+    "check": CheckControl,
     "duplicate-form": DuplicateFormControl,
     "map": MapControl
 };
@@ -282,11 +319,12 @@ var ControlRow = React.createClass({
                     return _this.props.formSequence + 1;
                 });
             }
+            var dataKey = control.name || control.id;
             var value = control.value || "";
             var checked = false;
-            if (control.name && _this.props.data && _this.props.data[control.name]) {
-                value = _this.props.data[control.name];
-                checked = (value === control.value);
+            if (dataKey && _this.props.data && _this.props.data[dataKey]) {
+                value = _this.props.data[dataKey];
+                checked = (value === true || value === control.value);
             }
             var props = jQuery.extend({}, control, {
                 "widthClass": widthClass,
