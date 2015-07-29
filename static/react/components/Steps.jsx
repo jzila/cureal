@@ -1,20 +1,3 @@
-var ActiveStep = React.createClass({
-    render: function() {
-        if (!this.props.form) {
-            return null;
-        }
-        var classes = classNames({
-            "step-form-container": true,
-            "hidden": !this.props.stepActive
-        });
-        return (
-            <div className={classes}>
-                <Form data={this.props.form.data} controls={this.props.form.controls} actions={this.props.form.actions} isActive={this.props.stepActive} />
-            </div>
-        );
-    }
-});
-
 var StepContainer = React.createClass({
     handleClick: function() {
         this.props.dispatchClick(this.props.id);
@@ -28,10 +11,14 @@ var StepContainer = React.createClass({
             'disabled': this.props.stepState === StepState.DISABLED,
             'step-submit': this.props.submit
         });
+        var form = null;
+        if (this.props.form) {
+            form = <Form data={this.props.form.data} controls={this.props.form.controls} actions={this.props.form.actions} isActive={this.props.stepActive} />;
+        }
         return (
             <li className={classes}>
                 <div onClick={this.handleClick} className="step-heading">{this.props.text}</div>
-                <ActiveStep stepActive={this.props.stepActive} form={this.props.form} ref="activeStep" />
+                {form}
             </li>
         );
     }

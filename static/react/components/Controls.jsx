@@ -2,17 +2,16 @@ var InputControl = React.createClass({
     handleChange: function(evt) {
         var key = this.props.id.substring(0, this.props.id.lastIndexOf("-"));
         var value = evt.target.value;
+        if (this.props.formatChange) {
+            value = this.props.formatChange(evt);
+        }
         this.props.handleChange(key, value);
     },
     render: function() {
-        var classes = {
-            "12u$(xsmall)": true
-        };
-        classes[this.props.widthClass] = true;
         var name = this.props.name || this.props.id;
         return (
-            <div className={classNames(classes)}>
-                <input type={this.props.inputType} name={name} id={this.props.id} placeholder={this.props.text} defaultValue={this.props.value} onChange={this.handleChange} />
+            <div className={"12u$(xsmall) " + this.props.widthClass}>
+                <input type={this.props.inputType} name={name} id={this.props.id} placeholder={this.props.text} defaultValue={this.props.value} onKeyDown={this.handleChange} />
             </div>
         );
     }
@@ -21,7 +20,72 @@ var InputControl = React.createClass({
 var TextControl = React.createClass({
     render: function() {
         return (
-            <InputControl inputType="text" id={this.props.id} name={this.props.id} text={this.props.text} widthClass={this.props.widthClass} value={this.props.value} handleChange={this.props.handleChange} />
+            <InputControl {...this.props} inputType="text"/>
+        );
+    }
+});
+
+var SSNControl = React.createClass({
+    ssnRegex: /(\d{0,3})(\d{0,3})(\d{0,3}).*/,
+    replaceSSN: function(m, p1, p2, p3) {
+        return p1 + (p1.length==3 ?
+                    '-' + p2 + (p2.length == 3 ?
+                                '-' + p3 :
+                                '') :
+                    '');
+    },
+    formatChange: function(evt) {
+        var value = evt.target.value;
+        var keycode = evt.keyCode;
+        var valid = 
+            (keycode > 47 && keycode < 58)   || // number keys
+            keycode == 32 || keycode == 13   || // spacebar & return key(s) (if you want to allow carriage returns)
+            (keycode > 64 && keycode < 91)   || // letter keys
+            (keycode > 95 && keycode < 112)  || // numpad keys
+            (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+            (keycode > 218 && keycode < 223);   // [\]' (in order)
+
+        if (valid) {
+            evt.preventDefault();
+            value += String.fromCharCode(evt.keyCode);
+        }
+        var sanitized = value.replace(/[^0-9]/g, '').substr(0, 9);
+
+        switch (evt.keyCode) {
+            case 8:
+                sanitized = sanitized.substring(0, sanitized.length - 1);
+                evt.preventDefault();
+                break;
+        }
+
+        evt.target.value = sanitized.replace(this.ssnRegex, this.replaceSSN);
+
+        return sanitized;
+    },
+    render: function() {
+        return (
+            <TextControl {...this.props} formatChange={this.formatChange} />
+        );
+    }
+});
+
+var RadioControl = React.createClass({
+    render: function() {
+        var classes = {
+            "radio": true,
+            "12u$(xsmall)": true,
+            "disabled": this.props.disabled
+        };
+        classes[this.props.widthClass] = true;
+        var helpTip = null;
+        if (this.props.helptip) {
+            helpTip = <span className="helptip">{this.props.helptip}</span>;
+        }
+        return (
+            <div className={classNames(classes)}>
+                <input type="radio" name={this.props.name} id={this.props.id} onChange={this.handleChange} disabled={this.props.disabled} checked={this.props.checked} />
+                <label className="12u$" htmlFor={this.props.id}>{this.props.text} {helpTip}</label>
+            </div>
         );
     }
 });
@@ -78,11 +142,9 @@ var MapControl = React.createClass({
     markers: [],
     mapMarkerClicked: function(i) {
         this.setState({selectedMarker: i});
-        console.log("Selected home " + this.state.homes[i].id);
     },
     mapClicked: function() {
         this.setState({selectedMarker: -1});
-        console.log("Deselected home");
     },
     getInitialState: function() {
         var homes = this.props.homes || [];
@@ -167,10 +229,11 @@ var MapControl = React.createClass({
 
 var controlLookupTable = {
     "name": TextControl,
-    "ssn": TextControl,
+    "ssn": SSNControl,
     "email": EmailControl,
     "phone": TextControl,
     "label": LabelControl,
+    "radio": RadioControl,
     "duplicate-form": DuplicateFormControl,
     "map": MapControl
 };
@@ -199,7 +262,7 @@ var ControlRow = React.createClass({
             id = id + "-" + _this.props.formId;
             var name = id;
             if (control.name) {
-                name = name + "-" + _this.props.formId;
+                name = control.name + "-" + _this.props.formId;
             }
             var text = "";
             if (control.text) {
@@ -213,6 +276,7 @@ var ControlRow = React.createClass({
             }
             var props = jQuery.extend({}, control, {
                 "widthClass": widthClass,
+                "name": name,
                 "id": id,
                 "key": id,
                 "text": text,
@@ -291,8 +355,12 @@ var Form = React.createClass({
         if (this.props.actions) {
             Array.prototype.push.apply(rows, this.props.actions.map(makeCreateRow({"id": "a"})));
         }
+        var classes = classNames({
+            "step-form-container": true,
+            "hidden": !this.props.isActive
+        });
         return (
-            <div className="12u$">
+            <div className={classes}>
                 {rows}
             </div>
         );
